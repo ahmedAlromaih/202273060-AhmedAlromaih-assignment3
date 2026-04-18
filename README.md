@@ -1,23 +1,65 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
-  <title id="title">Project 1 placeholder</title>
-  <desc id="desc">UI and UX project placeholder mockup</desc>
-  <defs>
-    <linearGradient id="bg1" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#10192e" />
-      <stop offset="100%" stop-color="#0b1220" />
-    </linearGradient>
-    <linearGradient id="panel1" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#6ee7ff" />
-      <stop offset="100%" stop-color="#2688ff" />
-    </linearGradient>
-  </defs>
-  <rect width="1200" height="700" rx="36" fill="url(#bg1)" />
-  <rect x="70" y="70" width="1060" height="560" rx="30" fill="#121a2b" stroke="#33415f" />
-  <rect x="120" y="130" width="240" height="420" rx="24" fill="#0f1727" stroke="#50607f" />
-  <rect x="410" y="130" width="320" height="110" rx="22" fill="url(#panel1)" />
-  <rect x="760" y="130" width="270" height="110" rx="22" fill="#0f1727" stroke="#50607f" />
-  <rect x="410" y="270" width="620" height="120" rx="22" fill="#0f1727" stroke="#50607f" />
-  <rect x="410" y="420" width="300" height="100" rx="22" fill="#0f1727" stroke="#50607f" />
-  <rect x="730" y="420" width="300" height="100" rx="22" fill="#0f1727" stroke="#50607f" />
-  <text x="120" y="615" font-family="Arial, sans-serif" font-size="44" fill="#eaf0ff">SWE206 UI/UX Project</text>
-</svg>
+# 202273060-AhmedAlromaih-assignment3
+
+Assignment 3 portfolio website for SWE363. The project extends the earlier portfolio work with live GitHub API data, richer project filtering and sorting logic, persistent visitor preferences, a stronger contact form, and updated documentation.
+
+## Project Description
+
+This is a static portfolio website built with HTML, CSS, and JavaScript. It highlights Ahmed Alromaih's academic work and demonstrates:
+
+- External API integration with the GitHub REST API
+- Complex JavaScript logic for filtering, sorting, personalization, and validation
+- State management using `localStorage`
+- Responsive design and simple performance-minded front-end practices
+
+## Folder Structure
+
+```text
+202273060-AhmedAlromaih-assignment3/
+|-- README.md
+|-- index.html
+|-- css/
+|   `-- styles.css
+|-- js/
+|   `-- script.js
+|-- assets/
+|   `-- images/
+|-- docs/
+|   |-- ai-usage-report.md
+|   `-- technical-documentation.md
+|-- projects/
+|   `-- simple-program/
+|       |-- README.md
+|       `-- bmi_calculator.py
+`-- .gitignore
+```
+
+## Features
+
+- Live GitHub repository cards fetched from `https://api.github.com/users/ahmedAlromaih/repos`
+- User-friendly loading and error handling for API requests
+- Project explorer with category filters, search, difficulty rules, and sorting
+- Visitor preference form that stores a name and preferred difficulty in `localStorage`
+- Light and dark theme toggle remembered across visits
+- Session timer that tracks how long a visitor has stayed on the page
+- Contact form with multi-step validation and clear inline feedback
+
+## How To Run Locally
+
+1. Clone the repository.
+2. Open the project folder.
+3. Launch `index.html` in a browser.
+
+No build step or package installation is required.
+
+## AI Usage Summary
+
+AI was used for planning features, debugging broken file organization, improving validation logic, and drafting technical documentation. A detailed explanation is available in [docs/ai-usage-report.md](docs/ai-usage-report.md).
+
+## Documentation
+
+- Technical notes: [docs/technical-documentation.md](docs/technical-documentation.md)
+- AI report: [docs/ai-usage-report.md](docs/ai-usage-report.md)
+
+## Optional Deployment
+
+This project can be deployed easily with GitHub Pages, Netlify, or Vercel.

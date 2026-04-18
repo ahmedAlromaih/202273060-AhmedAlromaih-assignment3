@@ -1,251 +1,358 @@
-/* ==========================
-   Helpers
-========================== */
-function $(id) { return document.getElementById(id); }
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ahmed Alromaih | Assignment 3 Portfolio</title>
+  <meta
+    name="description"
+    content="Assignment 3 portfolio site featuring GitHub API integration, advanced filtering logic, state management, and client-side validation."
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
 
-function setTheme(theme) {
-  document.documentElement.setAttribute("data-theme", theme);
-  localStorage.setItem("theme", theme);
+  <header class="site-header">
+    <nav class="container nav" aria-label="Primary">
+      <a class="brand" href="#main" aria-label="Ahmed Alromaih home">AA</a>
 
-  const btn = $("themeToggle");
-  if (btn) {
-    const isLight = theme === "light";
-    btn.setAttribute("aria-pressed", String(isLight));
-    btn.innerHTML = isLight ? "Sun <span class='hide-sm'>Theme</span>" : "Moon <span class='hide-sm'>Theme</span>";
-  }
-}
+      <button id="navToggle" class="nav__toggle" type="button" aria-expanded="false" aria-controls="navMenu">
+        <span class="sr-only">Toggle navigation</span>
+        Menu
+      </button>
 
-function initTheme() {
-  const saved = localStorage.getItem("theme");
-  if (saved === "light" || saved === "dark") {
-    setTheme(saved);
-    return;
-  }
+      <ul id="navMenu" class="nav__links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#github">GitHub</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li>
+          <button id="themeToggle" class="theme-btn" type="button" aria-pressed="false">
+            Dark mode
+          </button>
+        </li>
+      </ul>
+    </nav>
+  </header>
 
-  const prefersLight = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
-  setTheme(prefersLight ? "light" : "dark");
-}
+  <main id="main">
+    <section class="hero">
+      <div class="container hero__grid">
+        <div class="hero__content reveal">
+          <p id="greeting" class="eyebrow" aria-live="polite">Welcome</p>
+          <h1>
+            Building practical
+            <span class="accent">web, data, and AI-focused</span>
+            experiences.
+          </h1>
+          <p id="personalWelcome" class="lead">
+            I am Ahmed Alromaih, a Computer Science student using this portfolio to showcase coursework,
+            problem solving, and front-end engineering improvements from Assignment 3.
+          </p>
 
-function setGreeting() {
-  const el = $("greeting");
-  if (!el) return;
+          <div class="hero__actions">
+            <a class="btn" href="#projects">Explore Projects</a>
+            <a class="btn btn--ghost" href="#github">See Live GitHub Data</a>
+          </div>
 
-  const now = new Date();
-  const hour = now.getHours();
+          <div class="hero__stats" aria-label="Portfolio quick facts">
+            <article class="stat-card">
+              <span class="stat-card__label">Time on site</span>
+              <strong id="siteTimer" class="stat-card__value">00:00</strong>
+              <span class="stat-card__hint">Live session counter</span>
+            </article>
 
-  let msg = "Welcome!";
-  if (hour >= 5 && hour < 12) msg = "Good morning";
-  else if (hour >= 12 && hour < 17) msg = "Good afternoon";
-  else if (hour >= 17 && hour < 22) msg = "Good evening";
-  else msg = "Hello night owl";
+            <article class="stat-card">
+              <span class="stat-card__label">Recommended track</span>
+              <strong id="savedTrackLabel" class="stat-card__value">All visitors</strong>
+              <span class="stat-card__hint">Saved in local storage</span>
+            </article>
 
-  el.textContent = msg;
-}
+            <article class="stat-card">
+              <span class="stat-card__label">Visible projects</span>
+              <strong id="visibleProjectCount" class="stat-card__value">0</strong>
+              <span class="stat-card__hint">Updates with every filter</span>
+            </article>
+          </div>
+        </div>
 
-function setYear() {
-  const y = $("year");
-  if (y) y.textContent = String(new Date().getFullYear());
-}
+        <aside class="hero-panel reveal">
+          <div class="panel-head">
+            <p class="eyebrow eyebrow--soft">Visitor State</p>
+            <h2>Save your preferences</h2>
+          </div>
 
-/* ==========================
-   Mobile nav
-========================== */
-function initMobileNav() {
-  const toggle = $("navToggle");
-  const menu = $("navMenu");
-  if (!toggle || !menu) return;
+          <form id="visitorForm" class="stack-form" novalidate>
+            <label for="visitorName">Visitor name</label>
+            <input id="visitorName" name="visitorName" type="text" placeholder="How should I greet you?" maxlength="32" />
 
-  toggle.addEventListener("click", () => {
-    const isOpen = menu.classList.toggle("is-open");
-    toggle.setAttribute("aria-expanded", String(isOpen));
-  });
+            <label for="visitorTrack">Preferred difficulty</label>
+            <select id="visitorTrack" name="visitorTrack">
+              <option value="all">Show everything</option>
+              <option value="beginner">Beginner friendly</option>
+              <option value="advanced">Advanced challenge</option>
+            </select>
 
-  menu.querySelectorAll("a").forEach((a) => {
-    a.addEventListener("click", () => {
-      if (menu.classList.contains("is-open")) {
-        menu.classList.remove("is-open");
-        toggle.setAttribute("aria-expanded", "false");
-      }
-    });
-  });
+            <div class="button-row">
+              <button class="btn" type="submit">Save Preferences</button>
+              <button id="clearVisitorState" class="btn btn--ghost" type="button">Clear</button>
+            </div>
+          </form>
 
-  document.addEventListener("click", (e) => {
-    const target = e.target;
-    if (!menu.classList.contains("is-open")) return;
-    if (target === toggle || menu.contains(target)) return;
+          <p id="visitorStateMessage" class="panel-note" role="status" aria-live="polite">
+            Save a name and track to personalize the project section.
+          </p>
 
-    menu.classList.remove("is-open");
-    toggle.setAttribute("aria-expanded", "false");
-  });
-}
+          <img
+            class="hero-panel__image"
+            src="assets/images/profile-placeholder.svg"
+            alt="Abstract profile illustration for Ahmed Alromaih"
+            width="600"
+            height="600"
+            loading="lazy"
+          />
+        </aside>
+      </div>
+    </section>
 
-/* ==========================
-   Theme toggle
-========================== */
-function initThemeToggle() {
-  const btn = $("themeToggle");
-  if (!btn) return;
+    <section id="about" class="section section--surface reveal">
+      <div class="container split">
+        <div class="section-copy">
+          <p class="eyebrow eyebrow--soft">About Me</p>
+          <h2>Coursework with a stronger engineering layer</h2>
+          <p>
+            This portfolio started as a simple static site and now includes live API content, richer client-side
+            logic, persistent state, and more deliberate validation and feedback patterns.
+          </p>
+          <p>
+            My main interests are AI, data science, analytics, data engineering, and cloud computing. I enjoy
+            turning those interests into small but reliable products that feel clear to use and easy to maintain.
+          </p>
+        </div>
 
-  btn.addEventListener("click", () => {
-    const current = document.documentElement.getAttribute("data-theme") || "dark";
-    setTheme(current === "dark" ? "light" : "dark");
-  });
-}
+        <div class="info-card">
+          <h3>Current focus</h3>
+          <ul class="tag-list">
+            <li>Responsive UI</li>
+            <li>GitHub API integration</li>
+            <li>State management with local storage</li>
+            <li>Client-side validation</li>
+            <li>Performance-minded static sites</li>
+          </ul>
+        </div>
+      </div>
+    </section>
 
-/* ==========================
-   Project filters + search
-========================== */
-function initProjectFilters() {
-  const search = $("projectSearch");
-  const status = $("projectSearchStatus");
-  const empty = $("projectsEmptyState");
-  const buttons = Array.from(document.querySelectorAll(".filter-btn"));
-  const cards = Array.from(document.querySelectorAll(".project-item"));
+    <section id="projects" class="section reveal">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow eyebrow--soft">Complex Logic</p>
+            <h2>Project explorer</h2>
+          </div>
+          <p class="section-note">
+            Filter by category, search by keyword, sort by date or title, and switch the recommendation level.
+          </p>
+        </div>
 
-  if (!search || !status || !empty || buttons.length === 0 || cards.length === 0) return;
+        <div id="projectRecommendation" class="message-banner" role="status" aria-live="polite">
+          Showing every project right now.
+        </div>
 
-  let activeFilter = "all";
+        <div class="control-panel">
+          <div class="filter-row" aria-label="Project category filters">
+            <button class="filter-btn is-active" type="button" data-filter="all">All</button>
+            <button class="filter-btn" type="button" data-filter="web">Web</button>
+            <button class="filter-btn" type="button" data-filter="design">Design</button>
+            <button class="filter-btn" type="button" data-filter="python">Python</button>
+            <button class="filter-btn" type="button" data-filter="docs">Docs</button>
+          </div>
 
-  function updateProjects() {
-    const query = search.value.trim().toLowerCase();
-    let visibleCount = 0;
+          <div class="field-grid">
+            <div class="field">
+              <label for="projectSearch">Search</label>
+              <input
+                id="projectSearch"
+                type="search"
+                placeholder="Search title, skill, or keyword"
+                aria-describedby="projectSearchStatus"
+              />
+            </div>
 
-    cards.forEach((card) => {
-      const category = card.dataset.category || "";
-      const title = card.dataset.title || "";
-      const tags = card.dataset.tags || "";
-      const haystack = `${title} ${tags}`.toLowerCase();
-      const matchesFilter = activeFilter === "all" || category === activeFilter;
-      const matchesQuery = query === "" || haystack.includes(query);
-      const visible = matchesFilter && matchesQuery;
+            <div class="field">
+              <label for="audienceFilter">Difficulty view</label>
+              <select id="audienceFilter">
+                <option value="all">All difficulties</option>
+                <option value="beginner">Beginner friendly</option>
+                <option value="advanced">Advanced challenge</option>
+              </select>
+            </div>
 
-      card.hidden = !visible;
-      if (visible) visibleCount += 1;
-    });
+            <div class="field">
+              <label for="projectSort">Sort projects</label>
+              <select id="projectSort">
+                <option value="newest">Newest first</option>
+                <option value="oldest">Oldest first</option>
+                <option value="az">Title A-Z</option>
+              </select>
+            </div>
+          </div>
+        </div>
 
-    empty.hidden = visibleCount !== 0;
+        <p id="projectSearchStatus" class="status-line" aria-live="polite">
+          Project filters are ready.
+        </p>
 
-    if (visibleCount === 0) {
-      status.textContent = "No projects found. Try a different search or filter.";
-      return;
-    }
+        <div id="projectGrid" class="card-grid" aria-live="polite"></div>
 
-    const filterLabel = activeFilter === "all" ? "all" : activeFilter;
-    status.textContent = query
-      ? `Showing ${visibleCount} project(s) for "${query}" in ${filterLabel}.`
-      : `Showing ${visibleCount} project(s) in ${filterLabel}.`;
-  }
+        <p id="projectsEmptyState" class="empty-state" hidden>
+          No projects matched the current combination. Try another filter, sort order, or search term.
+        </p>
+      </div>
+    </section>
 
-  buttons.forEach((button) => {
-    button.addEventListener("click", () => {
-      activeFilter = button.dataset.filter || "all";
-      buttons.forEach((btn) => btn.classList.toggle("active", btn === button));
-      updateProjects();
-    });
-  });
+    <section id="github" class="section section--surface reveal">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow eyebrow--soft">API Integration</p>
+            <h2>Live GitHub repositories</h2>
+          </div>
+          <p class="section-note">
+            This section fetches repository data from the GitHub REST API for
+            <code>ahmedAlromaih</code> and shows loading, sorting, and error states.
+          </p>
+        </div>
 
-  search.addEventListener("input", updateProjects);
-  updateProjects();
-}
+        <div class="control-panel control-panel--compact">
+          <div class="field-grid field-grid--github">
+            <div class="field">
+              <label for="repoSort">Sort repositories</label>
+              <select id="repoSort">
+                <option value="updated">Recently updated</option>
+                <option value="stars">Most stars</option>
+                <option value="name">Name A-Z</option>
+              </select>
+            </div>
 
-/* ==========================
-   Reveal animations
-========================== */
-function initRevealAnimations() {
-  const items = document.querySelectorAll(".reveal");
-  if (items.length === 0) return;
+            <div class="field field--button">
+              <button id="refreshRepos" class="btn" type="button">Refresh GitHub Data</button>
+            </div>
+          </div>
+        </div>
 
-  if (!("IntersectionObserver" in window)) {
-    items.forEach((item) => item.classList.add("visible"));
-    return;
-  }
+        <p id="githubStatus" class="status-line" role="status" aria-live="polite">
+          Waiting to load repositories.
+        </p>
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("visible");
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.15 });
+        <div id="githubGrid" class="card-grid"></div>
 
-  items.forEach((item) => observer.observe(item));
-}
+        <p id="githubFallback" class="empty-state" hidden>
+          GitHub data could not be loaded right now. Please try again later.
+        </p>
+      </div>
+    </section>
 
-/* ==========================
-   Contact form validation (no backend)
-========================== */
-function isValidEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
+    <section class="section reveal">
+      <div class="container split">
+        <div class="section-copy">
+          <p class="eyebrow eyebrow--soft">Documentation</p>
+          <h2>Project artifacts</h2>
+          <p>
+            Assignment 3 also required documentation and transparency. The links below provide the supporting
+            technical notes, AI report, and the Python mini-project from the earlier assignment.
+          </p>
+        </div>
 
-function showError(fieldId, message) {
-  const small = document.querySelector(`small.error[data-for="${fieldId}"]`);
-  if (small) small.textContent = message || "";
-}
+        <div class="info-card">
+          <h3>Included files</h3>
+          <ul class="resource-list">
+            <li><a class="link" href="docs/technical-documentation.md">Technical documentation</a></li>
+            <li><a class="link" href="docs/ai-usage-report.md">AI usage report</a></li>
+            <li><a class="link" href="projects/simple-program/README.md">BMI calculator README</a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
 
-function initContactForm() {
-  const form = $("contactForm");
-  const status = $("formStatus");
-  if (!form) return;
+    <section id="contact" class="section reveal">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow eyebrow--soft">Validation</p>
+            <h2>Contact form</h2>
+          </div>
+          <p class="section-note">
+            This form performs multiple checks before showing a submission-ready success message.
+          </p>
+        </div>
 
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
+        <form id="contactForm" class="contact-card" novalidate>
+          <div class="field-grid">
+            <div class="field">
+              <label for="contactName">Name</label>
+              <input id="contactName" name="contactName" type="text" placeholder="Your full name" />
+              <small class="error-text" data-error-for="contactName"></small>
+            </div>
 
-    const name = $("name").value.trim();
-    const email = $("email").value.trim();
-    const message = $("message").value.trim();
+            <div class="field">
+              <label for="contactEmail">Email</label>
+              <input id="contactEmail" name="contactEmail" type="email" placeholder="name@example.com" />
+              <small class="error-text" data-error-for="contactEmail"></small>
+            </div>
 
-    let ok = true;
+            <div class="field">
+              <label for="contactTopic">Topic</label>
+              <select id="contactTopic" name="contactTopic">
+                <option value="">Choose a topic</option>
+                <option value="project">Project collaboration</option>
+                <option value="internship">Internship opportunity</option>
+                <option value="feedback">Portfolio feedback</option>
+              </select>
+              <small class="error-text" data-error-for="contactTopic"></small>
+            </div>
 
-    if (name.length < 2) {
-      showError("name", "Please enter your name (at least 2 characters).");
-      ok = false;
-    } else {
-      showError("name", "");
-    }
+            <div class="field">
+              <label for="contactMessage">Message</label>
+              <textarea id="contactMessage" name="contactMessage" rows="6" placeholder="Write at least 20 characters."></textarea>
+              <small class="error-text" data-error-for="contactMessage"></small>
+            </div>
+          </div>
 
-    if (!isValidEmail(email)) {
-      showError("email", "Please enter a valid email address.");
-      ok = false;
-    } else {
-      showError("email", "");
-    }
+          <label class="checkbox-row" for="contactConsent">
+            <input id="contactConsent" name="contactConsent" type="checkbox" />
+            <span>I confirm that the information above is complete and ready to send.</span>
+          </label>
+          <small class="error-text" data-error-for="contactConsent"></small>
 
-    if (message.length < 10) {
-      showError("message", "Message should be at least 10 characters.");
-      ok = false;
-    } else {
-      showError("message", "");
-    }
+          <div class="button-row">
+            <button class="btn" type="submit">Validate Message</button>
+            <button id="clearContactForm" class="btn btn--ghost" type="button">Reset Form</button>
+          </div>
 
-    if (!ok) {
-      if (status) {
-        status.textContent = "Please fix the errors above.";
-        status.className = "form__status error-state";
-      }
-      return;
-    }
+          <p id="formStatus" class="status-line" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+  </main>
 
-    if (status) {
-      status.textContent = "Thanks! Your message is ready to be sent (no backend in this assignment).";
-      status.className = "form__status success-state";
-    }
+  <footer class="site-footer">
+    <div class="container footer__inner">
+      <p>&copy; <span id="year"></span> Ahmed Alromaih. Built with HTML, CSS, and JavaScript.</p>
+      <div class="footer__links">
+        <a class="link" href="#main">Back to top</a>
+        <a class="link" href="https://github.com/ahmedAlromaih/202273060-AhmedAlromaih-assignment3" target="_blank" rel="noopener noreferrer">GitHub Repo</a>
+      </div>
+    </div>
+  </footer>
 
-    form.reset();
-  });
-}
-
-/* ==========================
-   Init
-========================== */
-document.addEventListener("DOMContentLoaded", () => {
-  initTheme();
-  initThemeToggle();
-  initMobileNav();
-  initProjectFilters();
-  initRevealAnimations();
-  initContactForm();
-  setGreeting();
-  setYear();
-});
+  <script src="js/script.js"></script>
+</body>
+</html>
